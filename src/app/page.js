@@ -1,41 +1,52 @@
+'use client'
+import { useEffect, useState } from "react"
 
 
 export default function Home() {
+
+  const [data, setData] = useState({})
+  const [dataArray, setDataArray] = useState([])
+  const [indicator, setIndicator] = useState([])
+  let counter = 0
+
+  const getAPI = async () => {
+    const API_URL = 'https://mindicador.cl/api/'
+    const res = await fetch(API_URL)
+    const API_DATA = await res.json()
+    setData(API_DATA)
+  }
+
+  useEffect(() => {
+    getAPI()
+  }, [])
+
+  useEffect(() => {
+    setDataArray(Object.values(data))
+  }, [data])
+
+  console.log(dataArray)
+
   return (
     <main className="container p-5 mx-auto flex flex-col gap-10 my-5 shadow-lg bg-white justify-center">
       <h1 className="text-3xl font-bold">
-        Conversor de monedas
+        Indicadores económicos diarios
       </h1>
-      <div className="flex gap-2">
+      <div className="flex flex-col gap-2">
         <div className="w-full bg-slate-400 p-4">
           <form className="flex flex-col gap-5 justify-center">
-            <h2>1 Ringgit malayo Es igual a
-              128,76 Libra sudanesa</h2>
-            <div className="flex justify-between">
-              <input value={'1'} min={'1'} />
-              <select>
-                <option value={'0'}>opción 0</option>
-                <option value={'1'}>opción 1</option>
-                <option value={'2'}>opción 2</option>
-                <option value={'3'}>opción 3</option>
-              </select>
-            </div>
-            <div className="flex justify-between">
-              <input value={'1'} min={'1'} />
-              <select>
-                <option value={'0'}>opción 0</option>
-                <option value={'1'}>opción 1</option>
-                <option value={'2'}>opción 2</option>
-                <option value={'3'}>opción 3</option>
-              </select>
-            </div>
+            <h2>Seleccione un indicador</h2>
+            <select>
+              {data && dataArray.map((item) => {
+                counter++
+                return counter > 3 ? <option key={counter} value={'0'}>{item.nombre}</option> : null
+              })}
+            </select>
           </form>
         </div>
-
         <div className="w-full bg-slate-400 p-4">
           <h2>Gráfico</h2>
         </div>
-      </div>
-    </main>
+      </div >
+    </main >
   )
 }
